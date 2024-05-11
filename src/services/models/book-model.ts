@@ -4,10 +4,9 @@ export interface AvailableBooks {
     title: string;
     ISBN: string;
     genre: string;
-    bookType: string;
     publicationYear: number;
     price: number;
-    condition: string;
+    description: string;
 }
 
 export interface BookProduct {
@@ -17,36 +16,35 @@ export interface BookProduct {
     title: string;
     ISBN: string;
     genre: string;
-    bookType: string;
     publicationYear: number;
     price: number;
-    condition: string;
+    description: string;
 }
 
 import { Types } from "mongoose";
 
-// export interface AuthorParams {
-//     firstName: string;
-//     lastName: string;
-//     book: Types.ObjectId;
-// }
+// // export interface AuthorParams {
+// //     firstName: string;
+// //     lastName: string;
+// //     book: Types.ObjectId;
+// // }
 
-// export interface Author{
+// // export interface Author{
+// //     id: Types.ObjectId;
+// //     firstName: string;
+// //     lastName: string;
+// //     book: Types.ObjectId;
+// // }
+
+// // export interface PublisherParams {
+// //     name: string;
+// //     country: string;
+// //     book: Types.ObjectId;
+// // }
+
+// export interface Publisher {
 //     id: Types.ObjectId;
-//     firstName: string;
-//     lastName: string;
-//     book: Types.ObjectId;
-// }
-
-// export interface PublisherParams {
 //     name: string;
 //     country: string;
 //     book: Types.ObjectId;
 // }
-
-export interface Publisher {
-    id: Types.ObjectId;
-    name: string;
-    country: string;
-    book: Types.ObjectId;
-}

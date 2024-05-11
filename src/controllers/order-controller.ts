@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+import { Types } from "mongoose";
 
 import {
     Body,
@@ -10,12 +11,12 @@ import {
     Security,
 } from "tsoa";
 
-import { OrderService, OrderFactory} from "../services/order-service";
+import { OrderService, Order} from "../services/order-service";
 import { InventoryFacade } from "../services/inventory-service";
 import { CartService } from "../services/cart-service";
 
 interface OrderRequest {
-    customerId: string;
+    customerId: Types.ObjectId;
     shippingAddress: string;
 }
 
@@ -26,8 +27,7 @@ export class OrderController extends Controller {
         super();
         const cartService = new CartService();
         const inventoryService = new InventoryFacade();
-        const orderFactory = new OrderFactory(cartService, inventoryService);
-        this.orderService = new OrderService(orderFactory);
+        this.orderService = new OrderService(cartService, inventoryService);
     }
     @Post("/checkout")
     @OperationId("checkout")
@@ -38,5 +38,16 @@ export class OrderController extends Controller {
         @Body() body: OrderRequest
     ): Promise<void> {
         await this.orderService.createOrder(body.customerId, body.shippingAddress);
+    }
+
+    @Post("/view/order")
+    @OperationId("viewOrder")
+    @Response(StatusCodes.OK)
+    @Response(StatusCodes.UNAUTHORIZED)
+    @Security("jwt")
+    public async getOrders(
+        @Body() customerId: Types.ObjectId
+    ): Promise<Order> {
+       return await this.orderService.view(customerId);
     }
 }

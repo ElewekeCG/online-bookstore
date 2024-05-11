@@ -13,10 +13,9 @@ export class BookService {
             title: params.title,
             ISBN: params.ISBN,
             genre: params.genre,
-            bookType: params.bookType,
             publicationYear: params.publicationYear,
             price: params.price,
-            condition: params.condition
+            description: params.description
         });
         if(!createdBooks){
             throw new Error ("book not added");
@@ -24,16 +23,11 @@ export class BookService {
         return createdBooks.toJSON() as BookProduct;
     }
 
-    public async viewAndSearchBooks(bookName?: string): Promise<BookProduct> {
+    public async viewBooks(): Promise<BookProduct> {
         try {
-            let bookResult;
-            if(bookName !== ""){
-                bookResult = await bookModel.findOne({bookName});
-            } else {
-                bookResult = await bookModel.find();
-            }
+            const bookResult = await bookModel.find();
             if(!bookResult){
-                throw new Error("book not found");
+                throw new Error("no books available found");
             }
             return bookResult as unknown as BookProduct;
         } catch(error) {

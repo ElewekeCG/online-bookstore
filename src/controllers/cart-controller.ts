@@ -1,4 +1,5 @@
 import { StatusCodes } from "http-status-codes";
+import { Types } from "mongoose";
 import {
     Body,
     Controller,
@@ -14,7 +15,7 @@ import {
 } from "tsoa";
 
  interface CartRequest {
-    customerId: string;
+    customerId: Types.ObjectId;
     item: CartItem;
  }
 import { Cart, CartItem, CartService } from "../services/cart-service";
@@ -49,24 +50,24 @@ export class CartController extends Controller {
         return await this.cartService.removeCart(requestBody.customerId, requestBody.item);
     }
 
-    @Delete("/clear/{customerId}")
+    @Delete("/{customerId}")
     @OperationId("clearCart")
     @Response(StatusCodes.OK)
     @Response(StatusCodes.NOT_FOUND)
     @Security("jwt")
     public async clearCart(
-        @Path() customerId: string
+        @Path() customerId: Types.ObjectId
     ): Promise<Cart> {
         return await this.cartService.deleteCart(customerId);
     }
 
-    @Get("/view/cart/{customerId}")
+    @Get("/{customerId}/view")
     @OperationId("viewCart")
     @Response(StatusCodes.OK)
     @Response(StatusCodes.NOT_FOUND)
     @Security("jwt")
     public async getCart(
-        @Path() customerId: string
+        @Path() customerId: Types.ObjectId
         // @Request() request: ExpressRequest.Request
     ): Promise<Cart> {
         // const user = request.user as AuthenticatedUser;

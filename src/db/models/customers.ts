@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Document, Schema, model } from "mongoose";
+import { Document, Types, Schema, model } from "mongoose";
 
 const CustomerSchema = new Schema (
     {
@@ -31,32 +31,18 @@ const CustomerSchema = new Schema (
             unique: true,
         },
         address: {
-            type: String,
-            maxlength: [100, "Address cannot be more than 500 characters"],
+            type: Types.ObjectId,
+            ref: "address",
             required: [true, "please enter address"],
-        },
-        province: {
-            type: String,
-            maxlength: [30, "province cannot exceed 30 characters"],
-            required: true,
-        },
-        postCode: {
-            type: String,
-            maxlength: [6, "postcode cannot exceed 6 characters"],
-            required: [true, "please enter postcode"],
-        },
-        country: {
-            type: String,
-            maxlength: 30,
-            required: true,
         },
         password: {
             type: String,
             required: [true, "Please provide a password"],
             minlength: [8, "Your password should be at least 8 characters"],
             maxlength: 30
-        },
+        }
 });
+
 
 CustomerSchema.pre("save", async function (next) {
     if (this.isNew) {

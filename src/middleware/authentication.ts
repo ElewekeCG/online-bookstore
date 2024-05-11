@@ -24,9 +24,15 @@ export async function expressAuthentication(
   if (securityName == "jwt"){
     try {
       // do not ignore rhe expiration
-      const user = await jwtAuth(token, false);
-      return user;
+      return await jwtAuth(token, false);
     } catch (error) {
+      throw new UnauthorizedError();
+    }
+  } else if (securityName == "jwt_without_verification") {
+    try {
+      // ignore the expiration
+      return await jwtAuth(token, true);
+    } catch {
       throw new UnauthorizedError();
     }
   } else {
@@ -45,7 +51,6 @@ async function jwtAuth(
     email: string;
     iss: string;
     jti: string;
-    isAdmin: boolean;
   };
 
   const jti = decoded.jti;
@@ -60,14 +65,13 @@ async function jwtAuth(
     throw new UnauthorizedError();
   }
 
-  const authUser: AuthenticatedUser = {
+  const user: AuthenticatedUser = {
     id: decoded.userId,
     email: decoded.email,
     jti: jti,
     iss: decoded.iss,
-    isAdmin: decoded.isAdmin
   };
 
-  return authUser;
+  return user;
 }
 

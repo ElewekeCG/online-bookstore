@@ -31,12 +31,6 @@ const BookSchema = new Schema (
             minlength: 3,
             maxlength: 10,
         },
-        bookType: {
-            type: String,
-            minlength: 4,
-            maxlength: 15,
-            required: true, 
-        },
         publicationYear: {
             type: Number,
             required: true,
@@ -47,10 +41,10 @@ const BookSchema = new Schema (
             required: [true, "please enter price"],
             min: 0,
         },
-        condition: {
+        description: {
             type: String,
             minlength: 4,
-            maxlength: 15,
+            maxlength: 50,
             required: true,
         },
 });
@@ -63,10 +57,9 @@ BookSchema.methods.toJSON = function(): any {
         title: this.title,
         ISBN: this.ISBN,
         genre: this.genre,
-        bookType: this.bookType,
         publicationYear: this.publicationYear,
         price: this.price,
-        condition: this.condition,
+        description: this.description,
     };
 };
 
@@ -76,10 +69,9 @@ interface BookDocument extends Document {
     title: string;
     ISBN: string;
     genre: string;
-    bookType: string;
     publicationYear: number;
     price: number;
-    condition: string;
+    description: string;
     toJSON: () => any;      
 }
 

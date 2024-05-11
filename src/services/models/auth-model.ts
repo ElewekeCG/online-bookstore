@@ -4,9 +4,6 @@ export interface UserCreationParams {
   email: string;
   phoneNumber: string;
   address: string;
-  province: string;
-  postCode: string;
-  country: string;
   password: string;
 }
 
@@ -16,9 +13,6 @@ export interface User {
   lastName: string;
   email: string;
   address: string;
-  province: string;
-  postCode: string;
-  country: string;
 }
 
 export interface UserAndCredentials {
@@ -33,3 +27,4 @@ export interface LoginParams {
   email: string;
   password: string;
 } 
+

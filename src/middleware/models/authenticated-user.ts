@@ -3,5 +3,10 @@ export default interface AuthenticatedUser {
   email: string;
   jti: string;
   iss: string;
-  isAdmin: boolean;
+  // isAdmin: boolean;
 }
+
+// export enum UserRoles {
+//   Admin = 'admin',
+//   User = 'user',
+// }

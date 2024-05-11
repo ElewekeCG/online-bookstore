@@ -11,18 +11,18 @@ export interface CartItem {
 
 export interface Cart {
     [x: string]: any;
-    customerId: string;
+    customerId: Types.ObjectId;
     items: CartItem[];
 }
 
 // cart strategy interface with an execute method
 interface CartStrategy{
-    executeStrategy(customerId: string, item?: CartItem): Promise<Cart>;
+    executeStrategy(customerId: Types.ObjectId, item?: CartItem): Promise<Cart>;
 }
 
 class AddToCartStrategy implements CartStrategy {
     async executeStrategy(
-        customerId: string, 
+        customerId: Types.ObjectId, 
         item: CartItem 
     ): Promise<Cart> {
         try {
@@ -50,7 +50,7 @@ class AddToCartStrategy implements CartStrategy {
 }
 
 class RemoveFromCartStrategy implements CartStrategy {
-    async executeStrategy(customerId: string, item: CartItem):Promise <Cart> {
+    async executeStrategy(customerId: Types.ObjectId, item: CartItem):Promise <Cart> {
         try {
             // retrieving book id from the item parameter
             const bookId = item.bookId;
@@ -89,7 +89,7 @@ class RemoveFromCartStrategy implements CartStrategy {
 }
 
 class GetCartStrategy implements CartStrategy {
-    async executeStrategy(customerId?: string): Promise<Cart> {
+    async executeStrategy(customerId?: Types.ObjectId): Promise<Cart> {
         try {
             const cart = await cartModel.findOne({ customerId });
             return cart ? cart.items : [];
@@ -100,8 +100,8 @@ class GetCartStrategy implements CartStrategy {
 }
 
 class ClearCartStrategy implements CartStrategy {
-    async executeStrategy(customerId?: string): Promise<Cart> {
-        const deletedCart = await cartModel.findByIdAndDelete({ customerId });
+    async executeStrategy(customerId?: Types.ObjectId): Promise<Cart> {
+        const deletedCart = await cartModel.findOneAndDelete(customerId);
         if(!deletedCart) {
             throw new Error("failed to delete cart");
         }
@@ -122,19 +122,19 @@ export class CartService {
         this.clearCart = new ClearCartStrategy();
     }
 
-    public async addCart(customerId: string, item: CartItem): Promise<Cart> {
+    public async addCart(customerId: Types.ObjectId, item: CartItem): Promise<Cart> {
         return this.addToCart.executeStrategy(customerId, item);
     }
 
-    public async removeCart(customerId: string, item: CartItem): Promise<Cart> {
+    public async removeCart(customerId: Types.ObjectId, item: CartItem): Promise<Cart> {
         return this.removeFromCart.executeStrategy(customerId, item);
     }
 
-    public async viewCart(customerId: string): Promise<Cart> {
+    public async viewCart(customerId: Types.ObjectId): Promise<Cart> {
         return this.getCart.executeStrategy(customerId);
     }
 
-    public async deleteCart(customerId: string): Promise<Cart> {
+    public async deleteCart(customerId: Types.ObjectId): Promise<Cart> {
         return this.clearCart.executeStrategy(customerId);
     }
 

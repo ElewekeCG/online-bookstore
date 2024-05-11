@@ -1,5 +1,4 @@
 import { Schema, Types, model } from "mongoose";
-// import Cart from "./cart";
 
 const OrderSchema = new Schema (
     {
@@ -17,33 +16,18 @@ const OrderSchema = new Schema (
             required: true,
         },
         shippingAddress: {
-            type: String,
-            minlength: 30,
-            maxlength: 100,
+            type: Types.ObjectId,
+            ref: "Addresses",
             required: true
         },
         booksOrdered: {
             type: Array
         },
+        orderStatus: {
+            type: String,
+            enum: ["pending", "shipped", "delivered"],
+            default: "pending",
+        }
 }, {timestamps: true});
-
-// OrderSchema.methods.toJSON = function(): any {
-//     return {
-//         customerId: this.customerId, 
-//         orderDate: this.orderDate,
-//         subtotal: this.subtotal,
-//         shippingAddress: this.shippingAddress,
-//         booksOrdered: this.booksOrdered,
-//     };
-// };
-
-// interface OrderDocument extends Document {
-//     customerId: Types.ObjectId;
-//     orderDate: string; 
-//     subTotal: number;
-//     shippingAddress: string;
-//     booksOrdered: CartDocument;
-//     toJSON: () => any;      
-// }
 
 export default model<any>("Orders", OrderSchema);

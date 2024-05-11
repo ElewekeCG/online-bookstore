@@ -1,5 +1,4 @@
 import {Schema, model, Types } from "mongoose";
-// import CartItem  from "./cart-item"
 
 const CartItemsSchema = new Schema ({
         bookId: {
@@ -20,27 +19,12 @@ const CartItemsSchema = new Schema ({
     }, {timestamps: true});
 
 const CartSchema = new Schema ({
-    customerId: {type: Types.ObjectId, ref: "Customer"},
+    customerId: {
+        type: Types.ObjectId, 
+        ref: "Customer",
+        required: true
+    },
     items: [CartItemsSchema]
 }, {timestamps: true});
-
-// CartSchema.methods.toJSON = function(): any {
-//     return {
-//         customerId: this.customerId, 
-//         items: this.items
-//     };
-// };
-
-// export interface CartDocument extends Document {
-//     customerId: Types.ObjectId;
-//     items: CartItemsDocument[];
-//     toJSON: () => any;      
-// }
-
-// interface CartItemsDocument extends Document {
-//     bookId: Types.ObjectId;
-//     quantity: number;
-//     price: number;      
-// }
 
 export default model<any>("Cart", CartSchema);

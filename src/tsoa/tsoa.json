@@ -7,10 +7,59 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"ReviewResult": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"book": {
+						"type": "string"
+					},
+					"rating": {
+						"type": "number",
+						"format": "double"
+					},
+					"reviewText": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"book",
+					"rating",
+					"reviewText"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ReviewParams": {
+				"properties": {
+					"book": {
+						"type": "string"
+					},
+					"rating": {
+						"type": "number",
+						"format": "double"
+					},
+					"reviewText": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"book",
+					"rating",
+					"reviewText"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"mongoose.Types.ObjectId": {
+				"type": "string"
+			},
 			"OrderRequest": {
 				"properties": {
 					"customerId": {
-						"type": "string"
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"shippingAddress": {
 						"type": "string"
@@ -22,9 +71,6 @@
 				],
 				"type": "object",
 				"additionalProperties": false
-			},
-			"mongoose.Types.ObjectId": {
-				"type": "string"
 			},
 			"CartItem": {
 				"properties": {
@@ -48,10 +94,39 @@
 				"type": "object",
 				"additionalProperties": false
 			},
+			"Order": {
+				"properties": {
+					"orderDate": {
+						"type": "string",
+						"format": "date-time"
+					},
+					"subtotal": {
+						"type": "number",
+						"format": "double"
+					},
+					"shippingAddress": {
+						"type": "string"
+					},
+					"bookOrdered": {
+						"items": {
+							"$ref": "#/components/schemas/CartItem"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"orderDate",
+					"subtotal",
+					"shippingAddress",
+					"bookOrdered"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Cart": {
 				"properties": {
 					"customerId": {
-						"type": "string"
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"items": {
 						"items": {
@@ -70,7 +145,7 @@
 			"CartRequest": {
 				"properties": {
 					"customerId": {
-						"type": "string"
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
 					"item": {
 						"$ref": "#/components/schemas/CartItem"
@@ -103,9 +178,6 @@
 					"genre": {
 						"type": "string"
 					},
-					"bookType": {
-						"type": "string"
-					},
 					"publicationYear": {
 						"type": "number",
 						"format": "double"
@@ -114,7 +186,7 @@
 						"type": "number",
 						"format": "double"
 					},
-					"condition": {
+					"description": {
 						"type": "string"
 					}
 				},
@@ -125,56 +197,9 @@
 					"title",
 					"ISBN",
 					"genre",
-					"bookType",
 					"publicationYear",
 					"price",
-					"condition"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"AvailableBooks": {
-				"properties": {
-					"author": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-					},
-					"publisher": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-					},
-					"title": {
-						"type": "string"
-					},
-					"ISBN": {
-						"type": "string"
-					},
-					"genre": {
-						"type": "string"
-					},
-					"bookType": {
-						"type": "string"
-					},
-					"publicationYear": {
-						"type": "number",
-						"format": "double"
-					},
-					"price": {
-						"type": "number",
-						"format": "double"
-					},
-					"condition": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"author",
-					"publisher",
-					"title",
-					"ISBN",
-					"genre",
-					"bookType",
-					"publicationYear",
-					"price",
-					"condition"
+					"description"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -220,15 +245,6 @@
 					"address": {
 						"type": "string"
 					},
-					"province": {
-						"type": "string"
-					},
-					"postCode": {
-						"type": "string"
-					},
-					"country": {
-						"type": "string"
-					},
 					"password": {
 						"type": "string"
 					}
@@ -239,9 +255,6 @@
 					"email",
 					"phoneNumber",
 					"address",
-					"province",
-					"postCode",
-					"country",
 					"password"
 				],
 				"type": "object",
@@ -259,6 +272,65 @@
 				"required": [
 					"email",
 					"password"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AvailableBooks": {
+				"properties": {
+					"author": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"publisher": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"title": {
+						"type": "string"
+					},
+					"ISBN": {
+						"type": "string"
+					},
+					"genre": {
+						"type": "string"
+					},
+					"publicationYear": {
+						"type": "number",
+						"format": "double"
+					},
+					"price": {
+						"type": "number",
+						"format": "double"
+					},
+					"description": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"author",
+					"publisher",
+					"title",
+					"ISBN",
+					"genre",
+					"publicationYear",
+					"price",
+					"description"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"InventoryItem": {
+				"properties": {
+					"bookId": {
+						"type": "string"
+					},
+					"quantity": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"bookId",
+					"quantity"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -284,6 +356,80 @@
 		}
 	},
 	"paths": {
+		"/api/v1/reviews/add": {
+			"post": {
+				"operationId": "addReview",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ReviewResult"
+								}
+							}
+						}
+					},
+					"201": {
+						"description": ""
+					},
+					"401": {
+						"description": ""
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/ReviewParams"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/reviews/{book}/get": {
+			"get": {
+				"operationId": "getReviews",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ReviewResult"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": ""
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "book",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
 		"/api/v1/order/checkout": {
 			"post": {
 				"operationId": "checkout",
@@ -310,6 +456,42 @@
 						"application/json": {
 							"schema": {
 								"$ref": "#/components/schemas/OrderRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/order/view/order": {
+			"post": {
+				"operationId": "viewOrder",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Order"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": ""
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 							}
 						}
 					}
@@ -388,7 +570,7 @@
 				}
 			}
 		},
-		"/api/v1/cart/clear/{customerId}": {
+		"/api/v1/cart/{customerId}": {
 			"delete": {
 				"operationId": "clearCart",
 				"responses": {
@@ -417,13 +599,13 @@
 						"name": "customerId",
 						"required": true,
 						"schema": {
-							"type": "string"
+							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 						}
 					}
 				]
 			}
 		},
-		"/api/v1/cart/view/cart/{customerId}": {
+		"/api/v1/cart/{customerId}/view": {
 			"get": {
 				"operationId": "viewCart",
 				"responses": {
@@ -452,15 +634,15 @@
 						"name": "customerId",
 						"required": true,
 						"schema": {
-							"type": "string"
+							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 						}
 					}
 				]
 			}
 		},
-		"/api/v1/books/add": {
-			"post": {
-				"operationId": "addBook",
+		"/api/v1/books/get": {
+			"get": {
+				"operationId": "getBooks",
 				"responses": {
 					"200": {
 						"description": "Ok",
@@ -472,9 +654,6 @@
 							}
 						}
 					},
-					"201": {
-						"description": ""
-					},
 					"401": {
 						"description": ""
 					}
@@ -484,17 +663,7 @@
 						"jwt": []
 					}
 				],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/AvailableBooks"
-							}
-						}
-					}
-				}
+				"parameters": []
 			}
 		},
 		"/api/v1/auth/register": {
@@ -694,6 +863,113 @@
 						}
 					}
 				}
+			}
+		},
+		"/api/v1/admin/books/add": {
+			"post": {
+				"operationId": "addBook",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/BookProduct"
+								}
+							}
+						}
+					},
+					"201": {
+						"description": ""
+					},
+					"401": {
+						"description": ""
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AvailableBooks"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/admin/inventory/update": {
+			"post": {
+				"operationId": "updateInventory",
+				"responses": {
+					"200": {
+						"description": ""
+					},
+					"204": {
+						"description": "No content"
+					},
+					"401": {
+						"description": ""
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"items": {
+									"$ref": "#/components/schemas/InventoryItem"
+								},
+								"type": "array"
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"operationId": "getInventory",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InventoryItem"
+								}
+							}
+						}
+					},
+					"401": {
+						"description": ""
+					}
+				},
+				"tags": [
+					"Admin"
+				],
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
 			}
 		}
 	},

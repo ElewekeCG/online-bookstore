@@ -1,4 +1,4 @@
-import { Document, Schema, Types, model } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
 const PublisherSchema = new Schema (
     {
@@ -9,13 +9,14 @@ const PublisherSchema = new Schema (
         },
         country: {
             type: String,
-            maxlength: [30, "country cannot exceed 25 characters"],
+            maxlength: [30, "country cannot exceed 30 characters"],
             minlength: [3, "country cannot be less than 3 characters"],
             required: [true, "Enter country"],
         },
-        book: {
-            type: Types.ObjectId,
-            ref: "Books",
+        contactInfo: {
+            type: String,
+            maxlength: [30, "contact info cannot exceed 30 characters"],
+            minlength: [10, "country cannot be less than 10 characters"],
             required: true,
         },
 });
@@ -25,14 +26,14 @@ PublisherSchema.methods.toJSON = function(): any {
         id: this._id,
         name: this.name,
         country: this.country, 
-        book: this.book,
+        contactInfo: this.contactInfo,
     };
 };
 
 interface PublisherDocument extends Document {
     name: string;
     country: string; 
-    book: Types.ObjectId;
+    contactInfo: string;
     toJSON: () => any;      
 }
 

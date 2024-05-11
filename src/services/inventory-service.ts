@@ -10,9 +10,13 @@ export class InventoryFacade {
     public async updateInventory(newInventory: InventoryItem[]): Promise<void> {
         return this.inventoryService.updateInventory(newInventory);
     }
+
+    public async viewInventory(): Promise<InventoryItem> {
+        return this.inventoryService.viewInventory();
+    }
 }
 
-interface InventoryItem {
+export interface InventoryItem {
     bookId: string;
     quantity: number;
 }
@@ -73,7 +77,7 @@ class InventoryService {
                 const existingItem = await inventoryModel.findOne({bookId: item.bookId});
                 if(existingItem) {
                     // if item exists
-                    existingItem.quantity = item.quantity;
+                    existingItem.quantity += item.quantity;
                     await existingItem.save();
                 } else {
                     // if item does not exist
@@ -82,6 +86,18 @@ class InventoryService {
             }
         } catch(error) {
             throw new Error(`Failed to update inventory: $error.message`);
+        }
+    }
+
+    public async viewInventory():Promise<InventoryItem> {
+        try {
+            const inventoryStatus = await inventoryModel.find();
+            if(!inventoryStatus){
+                throw new Error("no items available");
+            }
+            return inventoryStatus as unknown as InventoryItem;
+        } catch(error) {
+            throw error;
         }
     }
 }

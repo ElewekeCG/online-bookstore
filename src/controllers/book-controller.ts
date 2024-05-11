@@ -1,14 +1,11 @@
 import { StatusCodes } from "http-status-codes";
-// import { Types } from "mongoose";
 import {
-    Body,
+    // Body,
     Controller,
-    // Delete,
-    // Get,
+    Get,
     OperationId,
-    // Patch,
-    Post,
-    // Request,
+    // Path,
+    // Post,
     Response,
     Route,
     Security,
@@ -16,25 +13,17 @@ import {
 
 import { BookService } from "../services/book-service";
 import { 
-    AvailableBooks, 
     BookProduct, 
- } from "../services/models/book-model";
-
-// this request allows us to specify the data type of the request object itself
-// import * as ExpressRequest from "express";
+} from "../services/models/book-model";
 
 @Route("/api/v1/books")
 export class BookController extends Controller {
-    
-    @Post("/add")
-    @OperationId("addBook")
-    @Response(StatusCodes.CREATED)
+    @Get("/get")
+    @OperationId("getBooks")
+    @Response(StatusCodes.OK)
     @Response(StatusCodes.UNAUTHORIZED)
     @Security("jwt")
-    public async addBook(
-        @Body() body: AvailableBooks
-    ): Promise<BookProduct> {
-        const result = await new BookService().addBooks(body);
-        return result;
+    public async getBooks (): Promise<BookProduct> {
+        return await new BookService().viewBooks();
     }
 }

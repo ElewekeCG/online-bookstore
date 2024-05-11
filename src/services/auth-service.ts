@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import Blacklist from "../db/models/blacklist";
-import Customer from "../db/models/customer";
+import userModel from "../db/models/customers";
 
 import { 
   LoginParams, 
@@ -12,25 +12,12 @@ import {
   UnauthorizedError
 } from "../errors";
 
-export class AuthServiceFactory {
-  public static createAuthService(): AuthService {
-    return AuthService.createInstance();
-  }
-}
-
-export default class AuthService {
-    
-  private constructor() {}
-
-  public static createInstance(): AuthService {
-    return new AuthService();
-  }
-
+export class AuthService {
   public async register(
     params: UserCreationParams
   ): Promise<UserAndCredentials> {
     try {
-        const registeredCustomer = await Customer.create(params);
+        const registeredCustomer = await userModel.create(params);
         if (!registeredCustomer){
             throw new UnauthorizedError();
         }
@@ -48,7 +35,7 @@ export default class AuthService {
   }
 
   public async login(params: LoginParams): Promise<UserAndCredentials> {
-    const user = await Customer.findOne({ email: params.email });
+    const user = await userModel.findOne({ email: params.email });
     if(!user){
       throw new UnauthorizedError();
     }

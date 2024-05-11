@@ -21,25 +21,18 @@ import {
     UserCreationParams
 } from "../services/models/auth-model";
 
-import AuthService, { AuthServiceFactory }  from "../services/auth-service";
+import {AuthService} from "../services/auth-service";
 
 @Route("/api/v1/auth")
 @Tags("Auth")
 export class AuthController extends Controller {
-    private authService: AuthService;
-
-    constructor() {
-        super();
-        this.authService = AuthServiceFactory.createAuthService();
-    }
-
     @Post("register")
     @OperationId("registerUser")
     public async register(
         @Body() requestBody: UserCreationParams
     ): Promise<UserAndCredentials> {
         this.setStatus(StatusCodes.CREATED);
-        return this.authService.register(requestBody);
+        return new AuthService().register(requestBody);
     }
 
     @Post("/login")
@@ -48,7 +41,7 @@ export class AuthController extends Controller {
         @Body() requestBody: LoginParams
     ): Promise<UserAndCredentials> {
         this.setStatus(StatusCodes.OK);
-        return this.authService.login(requestBody);
+        return new AuthService().login(requestBody);
     }
 
     @Delete()
@@ -57,6 +50,6 @@ export class AuthController extends Controller {
     public async logout(@Request() request: ExpressRequest): Promise<void> {
         this.setStatus(StatusCodes.NO_CONTENT);
         const user = request.user as {jti: string};
-        await this.authService.logout(user.jti);
+        await new AuthService().logout(user.jti);
     }
 }

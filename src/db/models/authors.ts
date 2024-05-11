@@ -1,4 +1,4 @@
-import { Document, Schema, Types, model } from "mongoose";
+import { Document, Schema, model } from "mongoose";
 
 const AuthorSchema = new Schema (
     {
@@ -12,9 +12,9 @@ const AuthorSchema = new Schema (
             maxlength: 30,
             required: [true, "Enter last name"],
         },
-        book: {
-            type: Types.ObjectId,
-            ref: "Books",
+        biography: {
+            type: String,
+            minlength: [10, "biography must be at least 1o characters"],
             required: true,
         },
 });
@@ -24,14 +24,14 @@ AuthorSchema.methods.toJSON = function(): any {
         id: this._id,
         firstName: this.firstName, 
         lastName: this.lastName,
-        book: this.book,
+        biography: this.biography,
     };
 };
 
 interface AuthorDocument extends Document {
     firstName: string;
     lastName: string; 
-    book: Types.ObjectId;
+    biography: string;
     toJSON: () => any;      
 }
 
