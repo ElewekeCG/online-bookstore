@@ -1,7 +1,8 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { Document, Types, Schema, model } from "mongoose";
+import { Document, Types, Schema, connection } from "mongoose";
 
+const db = connection.useDb('onlineBookStore');
 const CustomerSchema = new Schema (
     {
         firstName: {
@@ -17,6 +18,7 @@ const CustomerSchema = new Schema (
         email: {
             type: String,
             required: [true, "Please enter your email"],
+            maxlength: 320,
             trim: true,
             unique: true,
             match: [
@@ -99,4 +101,4 @@ interface CustomerDocument extends Document {
     toJSON: () => any;      
 }
 
-export default model<CustomerDocument>("Customer", CustomerSchema);
+export default db.model<CustomerDocument>("Customer", CustomerSchema);

@@ -56,22 +56,6 @@
 			"mongoose.Types.ObjectId": {
 				"type": "string"
 			},
-			"OrderRequest": {
-				"properties": {
-					"customerId": {
-						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
-					},
-					"shippingAddress": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"customerId",
-					"shippingAddress"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
 			"CartItem": {
 				"properties": {
 					"bookId": {
@@ -96,18 +80,21 @@
 			},
 			"Order": {
 				"properties": {
+					"customerId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
 					"orderDate": {
 						"type": "string",
 						"format": "date-time"
 					},
-					"subtotal": {
+					"subTotal": {
 						"type": "number",
 						"format": "double"
 					},
 					"shippingAddress": {
-						"type": "string"
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
 					},
-					"bookOrdered": {
+					"booksOrdered": {
 						"items": {
 							"$ref": "#/components/schemas/CartItem"
 						},
@@ -115,10 +102,27 @@
 					}
 				},
 				"required": [
+					"customerId",
 					"orderDate",
-					"subtotal",
+					"subTotal",
 					"shippingAddress",
-					"bookOrdered"
+					"booksOrdered"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"OrderRequest": {
+				"properties": {
+					"customerId": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					},
+					"shippingAddress": {
+						"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+					}
+				},
+				"required": [
+					"customerId",
+					"shippingAddress"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -320,7 +324,7 @@
 			},
 			"InventoryItem": {
 				"properties": {
-					"bookId": {
+					"book": {
 						"type": "string"
 					},
 					"quantity": {
@@ -329,7 +333,7 @@
 					}
 				},
 				"required": [
-					"bookId",
+					"book",
 					"quantity"
 				],
 				"type": "object",
@@ -435,38 +439,6 @@
 				"operationId": "checkout",
 				"responses": {
 					"200": {
-						"description": ""
-					},
-					"204": {
-						"description": "No content"
-					},
-					"401": {
-						"description": ""
-					}
-				},
-				"security": [
-					{
-						"jwt": []
-					}
-				],
-				"parameters": [],
-				"requestBody": {
-					"required": true,
-					"content": {
-						"application/json": {
-							"schema": {
-								"$ref": "#/components/schemas/OrderRequest"
-							}
-						}
-					}
-				}
-			}
-		},
-		"/api/v1/order/view/order": {
-			"post": {
-				"operationId": "viewOrder",
-				"responses": {
-					"200": {
 						"description": "Ok",
 						"content": {
 							"application/json": {
@@ -491,11 +463,44 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+								"$ref": "#/components/schemas/OrderRequest"
 							}
 						}
 					}
 				}
+			}
+		},
+		"/api/v1/order/{customerId}/view": {
+			"get": {
+				"operationId": "viewOrder",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"401": {
+						"description": ""
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "customerId",
+						"required": true,
+						"schema": {
+							"$ref": "#/components/schemas/mongoose.Types.ObjectId"
+						}
+					}
+				]
 			}
 		},
 		"/api/v1/cart/add": {
@@ -912,10 +917,14 @@
 				"operationId": "updateInventory",
 				"responses": {
 					"200": {
-						"description": ""
-					},
-					"204": {
-						"description": "No content"
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/InventoryItem"
+								}
+							}
+						}
 					},
 					"401": {
 						"description": ""
@@ -935,15 +944,14 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"items": {
-									"$ref": "#/components/schemas/InventoryItem"
-								},
-								"type": "array"
+								"$ref": "#/components/schemas/InventoryItem"
 							}
 						}
 					}
 				}
-			},
+			}
+		},
+		"/api/v1/admin/{book}/inventory": {
 			"get": {
 				"operationId": "getInventory",
 				"responses": {
@@ -969,7 +977,16 @@
 						"jwt": []
 					}
 				],
-				"parameters": []
+				"parameters": [
+					{
+						"in": "path",
+						"name": "book",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},

@@ -1,4 +1,6 @@
-import { Document, Types, model, Schema } from "mongoose";
+import { Document, Types, connection, Schema } from "mongoose";
+
+const db = connection.useDb('onlineBookStore');
 
 const ReviewsSchema = new Schema({
     book: {
@@ -36,4 +38,4 @@ interface ReviewsDocument extends Document {
     toJSON: () => any;      
 }
 
-export default model<ReviewsDocument>("Reviews", ReviewsSchema);
+export default db.model<ReviewsDocument>("Reviews", ReviewsSchema);

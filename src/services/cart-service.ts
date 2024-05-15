@@ -1,32 +1,41 @@
+// importing types from mongoose in order to access the object id variable
 import { Types } from "mongoose";
 
+// importing the cart schema model
 import cartModel from "../db/models/cart";
 
-// cartiItem interface
+// cartiItem interface specifies the required data for cart creation
 export interface CartItem {
     bookId: Types.ObjectId;
     quantity: number;
     price: number;
 }
 
+// specify the return format for created carts based on the cart schema model
 export interface Cart {
     [x: string]: any;
     customerId: Types.ObjectId;
     items: CartItem[];
 }
 
-// cart strategy interface with an execute method
+/*cart strategy interface defines an execute method for carrying out 
+different cart operations*/
 interface CartStrategy{
+    // the item? specifies that a value for item is optional because not all operations
+    // need to pass it to the execute strategy
     executeStrategy(customerId: Types.ObjectId, item?: CartItem): Promise<Cart>;
 }
 
+// this class implements the strategy interface and calls the execute method
 class AddToCartStrategy implements CartStrategy {
     async executeStrategy(
         customerId: Types.ObjectId, 
         item: CartItem 
     ): Promise<Cart> {
         try {
+            // query the cart schema to see if the said customer already has a cart
             let cart = await cartModel.findOne({ customerId });
+            // if there is no cart, a new one is created for the customer
             if (!cart) {
                 cart = await cartModel.create({ customerId, item: [] });
             }
@@ -39,9 +48,12 @@ class AddToCartStrategy implements CartStrategy {
                 existingItem.price += item.price;
                 cart.items[existingItemIndex] = existingItem;
             } else {
+                // add items to the existing cart array
                 cart.items.push(item);
             }
+            // save the updated cart
             await cart.save();
+            // return the cart as the response
             return cart as Cart;
         } catch (error) {
             throw error;
@@ -89,9 +101,13 @@ class RemoveFromCartStrategy implements CartStrategy {
 }
 
 class GetCartStrategy implements CartStrategy {
-    async executeStrategy(customerId?: Types.ObjectId): Promise<Cart> {
+    // calling the execute strategy and passing the customer id to it
+    async executeStrategy(customerId: Types.ObjectId): Promise<Cart> {
         try {
+            // querying the schema model
             const cart = await cartModel.findOne({ customerId });
+            // using a teneray operator, if there items in the cart, the response will be
+            // the the cart and its items, else the response will be an empty array
             return cart ? cart.items : [];
         } catch (error) {
             throw error;
@@ -99,16 +115,20 @@ class GetCartStrategy implements CartStrategy {
     }
 }
 
+
 class ClearCartStrategy implements CartStrategy {
     async executeStrategy(customerId?: Types.ObjectId): Promise<Cart> {
+        // find the cart for a particular customer and delete it
         const deletedCart = await cartModel.findOneAndDelete(customerId);
         if(!deletedCart) {
             throw new Error("failed to delete cart");
         }
+        // return the deleted cart
         return deletedCart as Cart;
     }
 }
 
+// cart service class creates instances of the cart strategies and makes them available to the client
 export class CartService {
     private addToCart: CartStrategy;
     private removeFromCart: CartStrategy;
@@ -138,11 +158,5 @@ export class CartService {
         return this.clearCart.executeStrategy(customerId);
     }
 
-    public async calculateSubTotal(item: CartItem[]): Promise<number> {
-        try {
-            return item.reduce((acc, curr) => acc + (curr.quantity * curr.price), 0);
-        } catch(error) {
-            throw error;
-        }
-    }
+    // an extra method to calculate the subtotal for items in a cart
 }

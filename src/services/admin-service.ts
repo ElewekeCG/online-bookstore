@@ -1,8 +1,14 @@
+// importing the admin schema model
 import Admin from "../db/models/admin";
+// uuid is used for jwt authentication
 import { v4 as uuidv4 } from "uuid";
+// importing the blacklist schema model
 import Blacklist from "../db/models/blacklist";
 
+// admin service class handles admin authentication
 export default class AdminService {
+
+
     public async register(
         username: string,
         password: string
@@ -44,6 +50,8 @@ export default class AdminService {
         };
     }
     
+
+    // when a user logs out, their token is added to the blacklist schema
     public async logout(jti: string): Promise<void> {
         await Blacklist.create({ object: jti, kind: "jti" });
     }

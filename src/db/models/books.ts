@@ -1,4 +1,6 @@
-import { Document, Schema, Types, model } from "mongoose";
+import { Document, Schema, Types, connection } from "mongoose";
+
+const db = connection.useDb('onlineBookStore');
 
 const BookSchema = new Schema (
     {
@@ -26,10 +28,9 @@ const BookSchema = new Schema (
             unique: true,
         },
         genre: {
-            type: String,
+            type: Types.ObjectId,
+            ref: "Genres",
             required: true,
-            minlength: 3,
-            maxlength: 10,
         },
         publicationYear: {
             type: Number,
@@ -68,11 +69,11 @@ interface BookDocument extends Document {
     publisher: Types.ObjectId;
     title: string;
     ISBN: string;
-    genre: string;
+    genre: Types.ObjectId;
     publicationYear: number;
     price: number;
     description: string;
     toJSON: () => any;      
 }
 
-export default model<BookDocument>("Books", BookSchema);
+export default db.model<BookDocument>("Books", BookSchema);

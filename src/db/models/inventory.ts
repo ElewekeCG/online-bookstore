@@ -1,4 +1,6 @@
-import { Document, Schema, Types, model } from "mongoose";
+import { Document, Schema, Types, connection } from "mongoose";
+
+const db = connection.useDb('onlineBookStore');
 
 const InventorySchema = new Schema (
     {
@@ -27,4 +29,4 @@ interface InventoryDocument extends Document {
     toJSON: () => any;      
 }
 
-export default model<InventoryDocument>("Inventories", InventorySchema);
+export default db.model<InventoryDocument>("Inventories", InventorySchema);

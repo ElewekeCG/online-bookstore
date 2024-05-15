@@ -1,4 +1,12 @@
-import { Schema, Types, model } from "mongoose";
+import { Schema, Types, connection } from "mongoose";
+
+const db = connection.useDb('onlineBookStore');
+
+const BookOrderedSchema = new Schema({
+    bookId: { type: Types.ObjectId, ref: 'Book', required: true },
+    quantity: { type: Number, required: true },
+    price: { type: Number, required: true },
+  });
 
 const OrderSchema = new Schema (
     {
@@ -21,7 +29,7 @@ const OrderSchema = new Schema (
             required: true
         },
         booksOrdered: {
-            type: Array
+            type: [BookOrderedSchema],
         },
         orderStatus: {
             type: String,
@@ -30,4 +38,4 @@ const OrderSchema = new Schema (
         }
 }, {timestamps: true});
 
-export default model<any>("Orders", OrderSchema);
+export default db.model<any>("Orders", OrderSchema);

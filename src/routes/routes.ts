@@ -50,15 +50,6 @@ const models: TsoaRoute.Models = {
         "type": {"dataType":"string","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "OrderRequest": {
-        "dataType": "refObject",
-        "properties": {
-            "customerId": {"ref":"mongoose.Types.ObjectId","required":true},
-            "shippingAddress": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "CartItem": {
         "dataType": "refObject",
         "properties": {
@@ -72,10 +63,20 @@ const models: TsoaRoute.Models = {
     "Order": {
         "dataType": "refObject",
         "properties": {
+            "customerId": {"ref":"mongoose.Types.ObjectId","required":true},
             "orderDate": {"dataType":"datetime","required":true},
-            "subtotal": {"dataType":"double","required":true},
-            "shippingAddress": {"dataType":"string","required":true},
-            "bookOrdered": {"dataType":"array","array":{"dataType":"refObject","ref":"CartItem"},"required":true},
+            "subTotal": {"dataType":"double","required":true},
+            "shippingAddress": {"ref":"mongoose.Types.ObjectId","required":true},
+            "booksOrdered": {"dataType":"array","array":{"dataType":"refObject","ref":"CartItem"},"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "OrderRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "customerId": {"ref":"mongoose.Types.ObjectId","required":true},
+            "shippingAddress": {"ref":"mongoose.Types.ObjectId","required":true},
         },
         "additionalProperties": false,
     },
@@ -165,7 +166,7 @@ const models: TsoaRoute.Models = {
     "InventoryItem": {
         "dataType": "refObject",
         "properties": {
-            "bookId": {"dataType":"string","required":true},
+            "book": {"dataType":"string","required":true},
             "quantity": {"dataType":"double","required":true},
         },
         "additionalProperties": false,
@@ -274,14 +275,14 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/order/view/order',
+        app.get('/api/v1/order/:customerId/view',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(OrderController)),
             ...(fetchMiddlewares<RequestHandler>(OrderController.prototype.getOrders)),
 
             async function OrderController_getOrders(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    customerId: {"in":"body","name":"customerId","required":true,"ref":"mongoose.Types.ObjectId"},
+                    customerId: {"in":"path","name":"customerId","required":true,"ref":"mongoose.Types.ObjectId"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -648,7 +649,7 @@ export function RegisterRoutes(app: Router) {
 
             async function AdminController_updateInventory(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
-                    body: {"in":"body","name":"body","required":true,"dataType":"array","array":{"dataType":"refObject","ref":"InventoryItem"}},
+                    body: {"in":"body","name":"body","required":true,"ref":"InventoryItem"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -672,13 +673,14 @@ export function RegisterRoutes(app: Router) {
             }
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v1/admin/inventory/update',
+        app.get('/api/v1/admin/:book/inventory',
             authenticateMiddleware([{"jwt":[]}]),
             ...(fetchMiddlewares<RequestHandler>(AdminController)),
             ...(fetchMiddlewares<RequestHandler>(AdminController.prototype.getInv)),
 
             async function AdminController_getInv(request: ExRequest, response: ExResponse, next: any) {
             const args: Record<string, TsoaRoute.ParameterSchema> = {
+                    book: {"in":"path","name":"book","required":true,"dataType":"string"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

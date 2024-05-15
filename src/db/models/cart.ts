@@ -1,4 +1,6 @@
-import {Schema, model, Types } from "mongoose";
+import {Schema, connection, Types } from "mongoose";
+
+const db = connection.useDb('onlineBookStore');
 
 const CartItemsSchema = new Schema ({
         bookId: {
@@ -27,4 +29,4 @@ const CartSchema = new Schema ({
     items: [CartItemsSchema]
 }, {timestamps: true});
 
-export default model<any>("Cart", CartSchema);
+export default db.model<any>("Cart", CartSchema);

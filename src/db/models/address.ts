@@ -1,5 +1,9 @@
-import {Document, Schema, model} from "mongoose";
+// importing pre existing classes for schema creation from mongoose
+import {Document, Schema, connection} from "mongoose";
 
+const db = connection.useDb('onlineBookStore');
+
+// creating an address schema as an instance of the pre defined schema class in mongoose
 const AddressSchema = new Schema({
     street: {
         type: String,
@@ -29,6 +33,7 @@ const AddressSchema = new Schema({
     },
 });
 
+// converting the schema fields to JSON so thet the application can return JSON to the client
 AddressSchema.methods.toJSON = function(): any {
     return {
         street: this.street,
@@ -39,6 +44,10 @@ AddressSchema.methods.toJSON = function(): any {
     };
 };
 
+/*this is an optional step but it involves 
+creating an object interface that tell typescript the
+data types of each schema item
+*/ 
 interface AddressDocument extends Document {
     street: string;
     city: string;
@@ -48,4 +57,5 @@ interface AddressDocument extends Document {
     toJSON: () => any;      
 }
 
-export default model<AddressDocument>("Addresses", AddressSchema);
+// exporting the database model for use in various parts of the program
+export default db.model<AddressDocument>("Addresses", AddressSchema);

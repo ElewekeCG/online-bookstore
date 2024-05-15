@@ -1,4 +1,6 @@
-import { Document, Schema, model } from "mongoose";
+import { Document, Schema, Types, connection } from "mongoose";
+
+const db = connection.useDb('onlineBookStore');
 
 const PublisherSchema = new Schema (
     {
@@ -7,16 +9,15 @@ const PublisherSchema = new Schema (
             required: [true, "enter name"],
             maxlength: [30, "name cannot exceed 30 characters"]
         },
-        country: {
-            type: String,
-            maxlength: [30, "country cannot exceed 30 characters"],
-            minlength: [3, "country cannot be less than 3 characters"],
+        address: {
+            type: Types.ObjectId,
+            ref: "Address",
             required: [true, "Enter country"],
         },
         contactInfo: {
             type: String,
-            maxlength: [30, "contact info cannot exceed 30 characters"],
-            minlength: [10, "country cannot be less than 10 characters"],
+            maxlength: [11, "contact info cannot exceed 11 characters"],
+            minlength: [11, "country cannot be less than 11 characters"],
             required: true,
         },
 });
@@ -37,4 +38,4 @@ interface PublisherDocument extends Document {
     toJSON: () => any;      
 }
 
-export default model<PublisherDocument>("Publishers", PublisherSchema);
+export default db.model<PublisherDocument>("Publishers", PublisherSchema);

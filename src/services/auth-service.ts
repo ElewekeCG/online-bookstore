@@ -12,6 +12,7 @@ import {
   UnauthorizedError
 } from "../errors";
 
+// auth service class handles customer authentication
 export class AuthService {
   public async register(
     params: UserCreationParams
