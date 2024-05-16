@@ -1,8 +1,13 @@
 import {Schema, connection, Types } from "mongoose";
 
 const db = connection.useDb('onlineBookStore');
-
-const CartItemsSchema = new Schema ({
+const CartSchema = new Schema ({
+    customerId: {
+        type: Types.ObjectId, 
+        ref: "Customer",
+        required: true
+    },
+    items: [{
         bookId: {
             type: Types.ObjectId,
             ref: "Books",
@@ -17,16 +22,8 @@ const CartItemsSchema = new Schema ({
         price: {
             type: Number,
             required: true
-        }
-    }, {timestamps: true});
-
-const CartSchema = new Schema ({
-    customerId: {
-        type: Types.ObjectId, 
-        ref: "Customer",
-        required: true
-    },
-    items: [CartItemsSchema]
+        }        
+    }]
 }, {timestamps: true});
 
 export default db.model<any>("Cart", CartSchema);

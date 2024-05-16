@@ -2,12 +2,6 @@ import { Schema, Types, connection } from "mongoose";
 
 const db = connection.useDb('onlineBookStore');
 
-const BookOrderedSchema = new Schema({
-    bookId: { type: Types.ObjectId, ref: 'Book', required: true },
-    quantity: { type: Number, required: true },
-    price: { type: Number, required: true },
-  });
-
 const OrderSchema = new Schema (
     {
         customerId: {
@@ -28,9 +22,11 @@ const OrderSchema = new Schema (
             ref: "Addresses",
             required: true
         },
-        booksOrdered: {
-            type: [BookOrderedSchema],
-        },
+        booksOrdered: [{
+            bookId: { type: Types.ObjectId, ref: 'Book', required: true },
+            quantity: { type: Number, required: true },
+            price: { type: Number, required: true },
+        }],
         orderStatus: {
             type: String,
             enum: ["pending", "shipped", "delivered"],
